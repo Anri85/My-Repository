@@ -7,11 +7,6 @@ import DataPage from './pages/DataPage'
 
 function App() {
   return (
-    // <div className="App">
-    //   <header className="App-header">
-    //     <img src={logo} className="App-logo" alt="logo" />
-    // </header>
-    // </div>
     <React.Fragment>
       {/* membuat navbar */}
       <Navbar/>

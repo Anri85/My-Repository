@@ -1,3 +1,4 @@
+// importing npm package and component
 import { CircularProgress, Container, Grid, Paper, Slider, makeStyles, TextField, Typography, FormControl, RadioGroup, FormControlLabel, Radio } from '@material-ui/core'
 import { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
@@ -22,7 +23,7 @@ const useStyles = makeStyles({
     filter: {
         padding: '0 1.5rem'
     },
-    ageRangeInput: {
+    PriceRangeInput: {
         display: 'flex',
         justifyContent: 'space-between'
     }
@@ -42,22 +43,22 @@ const DataPage = () => {
     const [Loading, setLoading] = useState(false)
     // membuat component state (untuk fungsionalitas filters)
     const [SliderMax, setSliderMax] = useState(100)
-    const [AgeRange, setAgeRange] = useState([0, 30])
-    const [AgeOrder, setAgeOrder] = useState('descending')
+    const [PriceRange, setPriceRange] = useState([0, 500000])
+    const [PriceOrder, setPriceOrder] = useState('descending')
     const [Filter, setFilter] = useState('')
     const [Sorting, setSorting] = useState('')
 
     const updateUIValue = (uiValues) => {
-        setSliderMax(uiValues.maxAge)
-        if(uiValues.filtering.age) {
-            let ageFilter = uiValues.filtering.age
+        setSliderMax(uiValues.maxPrice)
+        if(uiValues.filtering.price) {
+            let priceFilter = uiValues.filtering.price
 
-            setAgeRange([Number(ageFilter.gte), Number(ageFilter.lte)])
+            setPriceRange([Number(priceFilter.gte), Number(priceFilter.lte)])
         }
 
-        if(uiValues.sorting.age) {
-            let ageSort = uiValues.sorting.age
-            setAgeOrder(ageSort)
+        if(uiValues.sorting.price) {
+            let priceSort = uiValues.sorting.price
+            setPriceOrder(priceSort)
         }
     }
     
@@ -84,12 +85,12 @@ const DataPage = () => {
 
                 const {...item} = await axios({
                     method: 'GET',
-                    url: `http://localhost:5000/api/data${query}`,
+                    url: `http://localhost:8000/api/product${query}`,
                     cancelToken: new axios.CancelToken((C) => {
                         cancel = C
                     })
                 })
-                setData(item.data.result)
+                setData(item.data.value)
                 setLoading(false)
                 updateUIValue(item.data.uiValues)
             } catch (error) {
@@ -108,24 +109,24 @@ const DataPage = () => {
     }, [Filter, params, Sorting])
 
     // fungsionalitas min age dan max age (filters)
-    const handleAgeInputChange = (e, type) => {
+    const handlePriceInputChange = (e, type) => {
         let newRange
         if(type === 'lower') {
-            newRange = [...AgeRange]
+            newRange = [...PriceRange]
             newRange[0] = Number(e.target.value)
 
-            setAgeRange(newRange)
+            setPriceRange(newRange)
         }
 
         if(type === 'upper') {
-            newRange = [...AgeRange]
+            newRange = [...PriceRange]
             newRange[1] = Number(e.target.value)
 
-            setAgeRange(newRange)
+            setPriceRange(newRange)
         }
     }
     const onTextFieldCommitHandler = () => {
-        buildRangeFilter(AgeRange)
+        buildRangeFilter(PriceRange)
     }
 
     // fungsionalitas slider
@@ -133,7 +134,7 @@ const DataPage = () => {
         buildRangeFilter(newValue)
     }
     const buildRangeFilter = (newValue) => {
-        const urlFilter = `?age[gte]=${newValue[0]}&age[lte]=${newValue[1]}`
+        const urlFilter = `?price[gte]=${newValue[0]}&price[lte]=${newValue[1]}`
         setFilter(urlFilter)
 
         history.push(urlFilter)
@@ -141,12 +142,12 @@ const DataPage = () => {
 
     // fungsionalitas Sort By
     const handleSortChange = (e) => {
-        setAgeOrder(e.target.value)
+        setPriceOrder(e.target.value)
 
         if(e.target.value === 'ascending') {
-            setSorting('age')
+            setSorting('price')
         } else if (e.target.value === 'descending') {
-            setSorting('-age')
+            setSorting('-price')
         }
     }
 
@@ -161,38 +162,38 @@ const DataPage = () => {
                             <Slider
                                 min={0}
                                 max={Number(SliderMax)}
-                                value={AgeRange}
+                                value={PriceRange}
                                 valueLabelDisplay='auto'
                                 disabled={Loading}
                                 onChange={(e, newValue) => {
-                                    setAgeRange(newValue)
+                                    setPriceRange(newValue)
                                 }}
                                 onChangeCommitted={onSliderCommitHandler}
                             />
-                            <div className={classes.ageRangeInput}>
+                            <div className={classes.PriceRangeInput}>
                                 <TextField
                                     size='small'
                                     id='lower'
-                                    label='Min Age'
+                                    label='Min Price'
                                     variant='outlined'
                                     type='number'
                                     disabled={Loading}
-                                    value={AgeRange[0]}
+                                    value={PriceRange[0]}
                                     onChange={(e) => {
-                                        handleAgeInputChange(e, 'lower')
+                                        handlePriceInputChange(e, 'lower')
                                     }}
                                     onBlur={onTextFieldCommitHandler}
                                 />
                                 <TextField
                                     size='small'
                                     id='upper'
-                                    label='Max Age'
+                                    label='Max Price'
                                     variant='outlined'
                                     type='number'
                                     disabled={Loading}
-                                    value={AgeRange[1]}
+                                    value={PriceRange[1]}
                                     onChange={(e) => {
-                                        handleAgeInputChange(e, 'upper')
+                                        handlePriceInputChange(e, 'upper')
                                     }}
                                     onBlur={onTextFieldCommitHandler}
                                 />
@@ -203,17 +204,17 @@ const DataPage = () => {
                     <Grid item={true} xs={12} sm={6}>
                         <Typography gutterBottom>Sort By</Typography>
                         <FormControl component='fieldset' className={classes.filter}>
-                            <RadioGroup aria-label='age-order' name='age-order' value={AgeOrder} onChange={handleSortChange}>
+                            <RadioGroup aria-label='price-order' name='price-order' value={PriceOrder} onChange={handleSortChange}>
                                 <FormControlLabel
                                     disabled={Loading}
                                     control={<Radio/>}
-                                    label='Max Age - To Min'
+                                    label='Max Price - To Min'
                                     value='descending'
                                 />
                                 <FormControlLabel
                                     disabled={Loading}
                                     control={<Radio/>}
-                                    label='Min Age - To Max'
+                                    label='Min Price - To Max'
                                     value='ascending'
                                 />
                             </RadioGroup>
