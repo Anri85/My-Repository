@@ -1,9 +1,14 @@
 const express = require('express')
+// importing file for connect to database
 const connectDB = require('./database/connection')
+// using cors module
 const cors = require('cors')
+// using dotenv module for read file .env
 const dotenv = require('dotenv')
+// initialization express into app constant
 const app = express()
-const ErrorHandler = require('./middleware/ErrorHandler')
+// connecting to error response middleware
+const errorResponse = require('./utilities/errorResponse')
 
 // membaca isi file .env
 dotenv.config()
@@ -22,11 +27,12 @@ app.use(cors(corsOpt))
 app.use(express.json())
 
 // menggunakan route
-app.use('/api/data', require('./route/dataRoute'))
+app.use('/api/product', require('./route/productRoute'))
+app.use('/api/user', require('./route/usersRoute'))
 
 // menerapkan ErrorHandler secara global
-app.use(ErrorHandler)
+app.use(errorResponse)
 
 app.listen(process.env.PORT, () => {
-    console.log('server is running at port: ' + process.env.PORT)
+    console.log('server Is Running At Port: ' + process.env.PORT)
 })
