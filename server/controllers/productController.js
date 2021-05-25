@@ -56,7 +56,6 @@ exports.GetAllProduct = async (request, response, next) => {
 
     uiValues.maxPrice = maxPrice[0].price
     uiValues.minPrice = minPrice[0].price
-    console.log(uiValues, products)
     response.status(200).json({status: true, value: products, uiValues, message: 'Successfull'})
 }
 

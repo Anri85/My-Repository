@@ -3,7 +3,7 @@ import { CircularProgress, Container, Grid, Paper, Slider, makeStyles, TextField
 import { useState, useEffect } from 'react'
 import { useHistory, useLocation } from 'react-router-dom'
 import axios from 'axios'
-import DataCard from '../components/DataCard'
+import DataCard from './ProductCard'
 
 // membuat syle untuk data page
 const useStyles = makeStyles({
@@ -85,7 +85,7 @@ const DataPage = () => {
 
                 const {...item} = await axios({
                     method: 'GET',
-                    url: `http://localhost:8000/api/product${query}`,
+                    url: `http://localhost:5000/api/product${query}`,
                     cancelToken: new axios.CancelToken((C) => {
                         cancel = C
                     })

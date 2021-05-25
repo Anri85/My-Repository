@@ -1,22 +1,18 @@
-// import logo from './logo.svg';
-import './App.css';
-import { BrowserRouter as Router, Switch, Route } from 'react-router-dom'
 import React from 'react'
-import Navbar from './components/Navbar'
-import DataPage from './pages/DataPage'
+import { BrowserRouter as Router, Route } from 'react-router-dom'
 
-function App() {
-  return (
-    <React.Fragment>
-      {/* membuat navbar */}
-      <Navbar/>
-      <Router>
-        <Switch>
-          <Route exact path='/' component={DataPage}/>
-        </Switch>
-      </Router>
-    </React.Fragment>
-  );
+import Product from './components/product/Product'
+import Join from './components/join/Join'
+import Chat from './components/chat/Chat'
+
+const App = () => {
+    return(
+        <Router>
+            <Route path='/' exact component={Product} />
+            <Route path='/login' component={Join} />
+            <Route path='/chat' component={Chat} />
+        </Router>
+    )
 }
 
-export default App;
+export default App
